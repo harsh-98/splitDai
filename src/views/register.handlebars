@@ -2,11 +2,23 @@
 {{> flash-message}}
 <div class="ui basic segment register-form" style="margin: auto;">
     <div class="ui two column very relaxed stackable grid margin-top">
-        <div class="center aligned middle aligned  column">
+        <div class="center aligned middle aligned  column" style="bottom: 60px;">
             <div class="ui big button" id="login-button">
                 <i class="signup icon"></i>
                 Log In
             </div>
+            <div class="oauth-box">
+
+
+            <button class="ui red button oauth-box-button" onclick="window.location.pathname= '/auth/google'">
+            <i class="google icon"></i>
+            Login with Google</button>
+            <button class="ui blue button oauth-box-button" onclick="window.location.pathname= '/auth/facebook'">
+            <i class="facebook f icon"></i>
+            Login with Facebook</button>
+        
+            </div>
+
         </div>
         {{> register-form}}
     </div>
