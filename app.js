@@ -81,27 +81,6 @@ require('./src/routes')(app,passport);
 
 
 
-// app.use((req, res, next) => {
-// 	console.log(req.session)
-// 	if (req.cookies['3dcookie'] && req.session.verfied != true) {
-// 		checkCookie(req.cookies['3dcookie'], (err, results) => {
-// 			if (err) {
-// 				console.log(err)
-// 			}
-// 			else if (results.length) {
-// 				req.session.userId = results[0].user_id;
-// 				req.session.username = results[0].username;
-// 				req.session.verfied = true;
-// 				console.log('cookie present')
-// 			}
-// 			next()
-// 		})
-// 	}
-// 	else {
-// 		next()
-// 	}
-// })
-
 let server = app.listen(process.env.PORT || 3000, function () {
 	let host = server.address().address
 	let port = server.address().port
