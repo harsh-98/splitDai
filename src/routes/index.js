@@ -25,7 +25,7 @@ module.exports = function (app, passport) {
             if (!user) { res.redirect(`/register`); }
             if (user)
                 // req.logIn(user, function (err) {
-                req.logIn([user, res], function (err) {
+                req.logIn(user, function (err) {
                     res.cookie('UserId', user.id)
                     res.cookie('recipient', user.token)
                     res.redirect(`/dashboard`);
@@ -39,7 +39,7 @@ module.exports = function (app, passport) {
             if (!user) { res.redirect(`/register`); }
             if (user)
                 // req.logIn(user, function (err) {
-                req.logIn([user, res], function (err) {
+                req.logIn(user, function (err) {
                     res.cookie('UserId', user.id)
                     res.cookie('recipient', user.token)
                     res.redirect(`/dashboard`);
@@ -56,10 +56,10 @@ module.exports = function (app, passport) {
         passport.authenticate('local-login', function (err, user, info) {
             if (!user) { res.redirect(`/register`); }
             if (user)
-                req.logIn([user, res], function (err) {
+                req.logIn(user, function (err) {
                     // req.logIn(user, function (err) {
                     res.cookie('UserId', user.id)
-                    res.redirect(`/profile`);
+                    res.redirect(`/dashboard`);
                 })
         })(req, res, next)
     })

@@ -6,7 +6,7 @@ import { createHashedPassword, getPicture } from './../helpers'
 
 export const register = (req, res) => {
     if (req.isAuthenticated()) {
-        res.redirect(`/profile`)
+        res.redirect(`/dashboard`)
     } else {
         res.render('register', { userData: {} })
     }
@@ -16,7 +16,7 @@ export const dashboard = (req, res) => {
     if (req.isAuthenticated()) {
         res.render('dashboard', { userData: {} })
     } else {
-        res.redirect(`/${req.params.role}/register`)
+        res.redirect(`/register`)
     }
 }
 
@@ -25,7 +25,7 @@ export const index = (req, res) => {
         res.redirect(`/dashboard`)
 
     } else {
-        res.redirect("register")
+        res.redirect("/register")
     }
 }
 

@@ -44,6 +44,10 @@ export default function(sequelize, Sequelize) {
     });
 
     User.associate = function (models) {
+        User.belongsToMany(models.Bill,{
+            as: 'bills',
+            through: 'userBill'
+        })
     }
     User.prototype.validPassword =  function (password) {
         return bcrypt.compareSync(password, this.password)

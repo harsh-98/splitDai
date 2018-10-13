@@ -19,28 +19,12 @@ module.exports = function (User, passport) {
     let FacebookStrategy = passportFacebook.Strategy;
 
     passport.serializeUser(function (user, done) {
-        let res = user[1]
-        user = user[0]
         console.log('searialUser')
 
         let data = {
             id: user.id,
             name: user.firstname + ' ' + user.lastname,
-            username: user.username
         }
-        const createUser = userClient.createUser({
-            userId: `user-${data.id}`,
-            userLocators: [],
-            systemUser: false,
-            screenName: {
-                screenName: data.name
-            }
-        }).catch((e) => {
-            done(e, null);
-            if (!(e.response.status === 409 && e.response.data.errorCode === 'duplicate_entity')) {
-                throw e
-            }
-        })
         done(null, data);
 
     });
@@ -66,16 +50,13 @@ module.exports = function (User, passport) {
     },
         function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
-            let role = req.cookies.role
             let gender = profile.gender
             gender = gender ?gender : "male"
             let email = profile.emails[0].value
             let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
-                username: profile.id,
                 email: email,
-                role: role ? role : "student",
                 password: profile.provider,
                 gender: gender ? gender : "male",
                 pic: getPicture(gender)
@@ -103,16 +84,13 @@ module.exports = function (User, passport) {
     },
         function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
-            let role = req.cookies.role
             let gender = profile.gender
             let email = profile.emails[0].value
             email ? email : profile.id + '@gmail.com'
             let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
-                username: profile.id.toString(),
                 email: email,
-                role: role,
                 password: profile.provider,
                 gender: gender ? gender : "male",
                 pic: profile.photos[0].value
@@ -132,17 +110,13 @@ module.exports = function (User, passport) {
 
     passport.use('local-login', new LocalStrategy(
         {
-            usernameField: 'username',
             passwordField: 'password',
             passReqToCallback: true // allows us to pass back the entire request to the callback
         },
         function (req, username, password, done) {
             User.findOne({
                 where: {
-                    [Op.or]: [
-                        { username: username },
-                        { email: username }
-                    ]
+                        email: username
                 }
             }).then(function (user) {
                 if (!user) {
