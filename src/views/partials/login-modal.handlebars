@@ -1,0 +1,24 @@
+<div class="ui modal">
+  <form action="/{{userData.role}}/login" method="post">
+    <div class="ui very padded basic segment">
+      <div class="ui form">
+        <div class="field">
+          <label>Username or email</label>
+          <div class="ui left icon input">
+            <input type="text" placeholder="Username or email" name="username" required>
+            <i class="user icon"></i>
+          </div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="ui left icon input">
+            <input type="password" name="password" required>
+            <i class="lock icon"></i>
+          </div>
+        </div>
+        <input type="submit" value="Login" class="ui blue submit button"/>
+      </div>
+    </div>
+  </form>
+
+</div>

@@ -1,0 +1,63 @@
+<div class="column">
+    <div class="oauth-box">
+
+        <button class="ui red button oauth-box-button" onclick="window.location.pathname= '/auth/google'">
+            <i class="google icon"></i>
+            Login with Google</button>
+        <button class="ui blue button oauth-box-button" onclick="window.location.pathname= '/auth/facebook'">
+            <i class="facebook f icon"></i>
+            Login with Facebook</button>
+    </div>
+    <form action="/{{userData.role}}/register" method="post">
+    <div class="ui form">
+        <div class="two fields">
+            <div class="field">
+                <label>First Name</label>
+                <input placeholder="First Name" type="text" name="firstname">
+            </div>
+            <div class="field">
+                <label>Last Name</label>
+                <input placeholder="Last Name" type="text" name="lastname">
+            </div>
+        </div>
+        <div class="field">
+            <label>Email</label>
+            <div class="ui left icon input">
+                <input type="text" placeholder="xyz@example.com" name="email">
+                <i class="user icon"></i>
+            </div>
+        </div>
+        <div class="field">
+            <label>Gender</label>
+            <div class="ui dropdown selection dropdownable">
+                <input type="hidden" name="gender" name="gender">
+                <div class="default text">Gender</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="item" data-value="male">Male</div>
+                    <div class="item" data-value="female">Female</div>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <div class="ui left icon input">
+                <input type="password" name="password">
+                <i class="lock icon"></i>
+            </div>
+        </div>
+        <div class="field">
+            <label>Confirm Password</label>
+            <div class="ui left icon input">
+                <input type="password" name="passwordCon">
+                <i class="lock icon"></i>
+            </div>
+        </div>
+        <input type="submit" class="ui blue submit button" value="Sign Up">
+    </div>
+    </form>
+</div>
+
+<script>
+    document.cookie = "role={{userData.role}}; path=/"
+</script>

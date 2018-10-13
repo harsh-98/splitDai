@@ -1,0 +1,34 @@
+</head>
+{{> flash-message}}
+<div class="ui basic segment register-form" style="margin: auto;">
+    <div class="ui two column very relaxed stackable grid margin-top">
+        <div class="center aligned middle aligned  column">
+            <div class="ui big button" id="login-button">
+                <i class="signup icon"></i>
+                Log In
+            </div>
+        </div>
+        {{> register-form}}
+    </div>
+    <div class="ui vertical divider margin-top">Or</div>
+</div>
+{{> login-modal}}
+<script>
+    $(document).ready(function () {
+        $('.dropdownable').dropdown({
+            clearable: true
+        });
+        $('#login-button').click(function () {
+            $('.modal')
+                .modal('setting', 'transition', 'fade up')
+                .modal('show')
+        })
+    });
+
+    $('.message .close')
+        .on('click', function () {
+            $(this)
+                .closest('.message')
+                .transition('fade');
+        });
+</script>
