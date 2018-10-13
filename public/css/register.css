@@ -1,0 +1,45 @@
+/* authorized */
+.pusher {
+    width: calc(100% - 300px)
+}
+
+.ui.loader {
+    top: 50vh !important;
+}
+.ui.comments .comment .avatar img, .ui.comments .comment img.avatar {
+    height: auto !important;
+}
+
+.capitalize {
+    text-transform:capitalize;
+}
+
+/* register */
+.register-form {
+    width: 70%;
+    /* position: relative; */
+}
+
+.oauth-box {
+    text-align: center;
+
+}
+.modal {
+    width: 30% !important;
+}
+.oauth-box-button {
+    margin-bottom: 20px !important;
+    padding: 15px 20px !important;
+}
+.margin-top {
+    margin-top: 2vh !important;
+}
+.flash-message {
+    /* width: 40%; */
+    z-index: 10 ;
+    position: absolute !important;
+    top: 5vh;
+    left: 50%;
+transform: translateX(-50%);
+
+}

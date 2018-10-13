@@ -3,6 +3,32 @@ import Sequelize from 'sequelize'
 let Op = Sequelize.Op
 import { createHashedPassword, getPicture } from './../helpers'
 
+
+export const register = (req, res) => {
+    if (req.isAuthenticated()) {
+        res.redirect(`/profile`)
+    } else {
+        res.render('register', { userData: {} })
+    }
+}
+
+export const dashboard = (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render('dashboard', { userData: {} })
+    } else {
+        res.redirect(`/${req.params.role}/register`)
+    }
+}
+
+export const index = (req, res) => {
+    if (req.isAuthenticated()) {
+        res.redirect(`/dashboard`)
+
+    } else {
+        res.redirect("register")
+    }
+}
+
 export const registerUser = (req, res) => {
     models.User.findOne({
         where: {

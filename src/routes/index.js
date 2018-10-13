@@ -6,8 +6,7 @@
 import bcrypt from 'bcryptjs'
 // import tutor from './tutor'
 // import student from './student'
-import { index, registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate } from './../controllers'
-import { whiteboard, discussion, addCourseTemplate, registerCourseTemplate, comingSoon } from './../controllers/ajax'
+import { index, registerUser, register, dashboard } from './../controllers'
 
 module.exports = function (app, passport) {
 
