@@ -8,7 +8,7 @@ class SideBar extends Component {
         const style = { height: '50px' }
         const zIndex = { zIndex: 0 }
         return (
-            <Sidebar as={Menu} vertical left visible inverted style={zIndex}>
+            <Sidebar as={Menu} vertical left visible className="thin" inverted style={zIndex}>
                 <Menu.Item style={style}>
                 </Menu.Item>
                 <Link to="/create">
