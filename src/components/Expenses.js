@@ -149,6 +149,7 @@ class Expenses extends Component {
 
     }
 
+    // Frontend Logic
     render() {
       let { bills, channelID, group, newBill } = this.state;
 
@@ -324,6 +325,7 @@ class Expenses extends Component {
       )
     }
 
+    // Frontend Logic
     addBill() {
       const newBill = {
         parts: [],
@@ -387,6 +389,7 @@ class Expenses extends Component {
       });
     }
 
+    // Frontend Logic
     submitNewBill() {
       const groupId = this.state.channelID;
 
