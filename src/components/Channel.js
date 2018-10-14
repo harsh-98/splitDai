@@ -245,7 +245,7 @@ class Channel extends Component {
           <Form onSubmit={this.handleSubmitNewChannel}>
             <Form.Group>
               <Form.Input placeholder='Group Name' name="GroupName" width={11} />
-              <Button floated='right' onClick={this.handleAddFriend}>Add friends</Button>
+              <div className="ui button" floated='right' onClick={this.handleAddFriend}>Add friends</div>
             </Form.Group>
             {this.state.friends.map((friend, idx) => (
             <Form.Group>
