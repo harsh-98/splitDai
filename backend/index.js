@@ -4,6 +4,7 @@ const express = require('express');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
 const Tx = require('ethereumjs-tx');
+const request = require('request');
 
 const NETWORK_ID = 5777;
 
@@ -293,14 +294,13 @@ const main = async () => {
     app.get('/getGroups', async (req, res) => {
         
         let groups;
-        splitETH_event.getPastEvents('GroupCreated', {
+        splitETH.getPastEvents('GroupCreated', {
             fromBlock: 0,
             toBlock: 'latest'
         }, function(){})
         .then(async function(events){
-            groups = [];
-          });
-  
+            
+          groups = [];
           console.log("events!!!!! : " + events);
   
           for (let element of events) {
@@ -319,9 +319,9 @@ const main = async () => {
   
             const result2 = await splitETH.methods.groupCloseTime(element.returnValues._name).call();
             console.log("que",result2);
-            _res.send({
+            return res.send({
               groups: [...groups, {
-                  name: web3.utils.toAscii(element.returnValues._name),
+                  name: cleanAsciiText(web3.utils.toAscii(element.returnValues._name)),
                   friends: friends,
                   timeout: element.returnValues._timeout,
                   closed: result2 > 0 ? true : false,
@@ -329,35 +329,39 @@ const main = async () => {
                 }]
             });
         }
+    }); 
     });
 
     app.post('/submitNewChannel', async (req, res) => {
 
         var groupName = web3.utils.fromAscii(req.body.groupName);
         let addresses = [];
-        let friends = memoize[groupName];
-        friends.forEach(function(element) {
-            addresses.push(element.address);
-        });
-        var tokenAddress = req.body.tokenAddress;
-        var expiry = req.body.expiry;
-        
-        const receipt = await splitETH.methods.createGroup(
-            groupName,
-            addresses,
-            tokenAddress,
-            expiry).send({from:req.body.address});
-        
-        const group = new GroupModel({
-            name: req.body.groupName,
-            numParticipants: req.body.numParticipants,
-            members: req.body.members
-        });
+        request(`http://localhost:3001/getGroups/?address=${req.body.address}`, async (error, response, body) => {
+            let friends = JSON.parse(response.body).groups[0].friends;
+            console.log(friends);
+            friends.forEach(function(element) {
+                addresses.push(element.address);
+            });
+            var tokenAddress = req.body.tokenAddress;
+            var expiry = req.body.expiry;
+            
+            const receipt = await splitETH.methods.createGroup(
+                groupName,
+                addresses,
+                tokenAddress,
+                expiry).send({from:req.body.address});
+            
+            const group = new GroupModel({
+                name: req.body.groupName,
+                numParticipants: req.body.numParticipants,
+                members: req.body.members
+            });
 
-        await group.save();
-        console.log('group saved');
+            await group.save();
+            console.log('group saved');
 
-        res.json(group);
+            res.json(group);
+        });
     });
 
     app.post('/submitJoinChannel', async (req, res) => {
@@ -379,7 +383,7 @@ const main = async () => {
           groupName,
           user,
           web3.utils.toWei(amount,"ether")
-        ).send({from: req.body.address})
+        ).send({from: req.body.user})
         .then(function(){
           res.json({message:"Split Ether successful"});
         });
