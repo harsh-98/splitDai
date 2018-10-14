@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'reactstrap';
 import { FormGroup, Label, Table } from 'reactstrap';
 import $ from 'jquery';
 
-import { Segment, Form, Button, Icon } from 'semantic-ui-react'
+import { Segment, Form, Button, Icon, Input } from 'semantic-ui-react'
 import { cleanAsciiText, toWei } from './Expenses';
 
 import {
@@ -25,6 +25,9 @@ class Channel extends Component {
     this.handleNewChannel = this.handleNewChannel.bind(this);
 
     this.handleSubmitNewChannel = this.handleSubmitNewChannel.bind(this);
+    this.handlePullFundsFromChannel = this.handlePullFundsFromChannel.bind(this);
+    this.handleJoinChannel = this.handleJoinChannel.bind(this);
+    this.handleCloseChannel = this.handleCloseChannel.bind(this);
     this.handleSubmitJoinChannel = this.handleSubmitJoinChannel.bind(this);
 
     const splitETHAddress = SplitETHJSON.networks[NETWORK_ID].address;
@@ -239,7 +242,7 @@ class Channel extends Component {
       return (
         <Segment basic style={containerStyle}>
           <h2>Group form</h2>
-          <Form>
+          <Form onSubmit={this.handleSubmitNewChannel}>
             <Form.Group>
               <Form.Input placeholder='Group Name' name="GroupName" width={11} />
               <Button floated='right' onClick={this.handleAddFriend}>Add friends</Button>
@@ -264,44 +267,44 @@ class Channel extends Component {
 
       )
     } else if (this.state.selectedOption == 2) {
-      // return (
-      //   <Container className="Wallet">
-      //     <Row>
-      //       <Col sm="12" md={{ size: 8, offset: 2 }}>
-      //         Fund Group
-      //         </Col>
-      //     </Row>
-      //     <Row>
-      //       <Col sm="12">
-      //         <Form onSubmit={this.handleSubmitJoinChannel}>
-      //           <FormGroup row>
-      //             <Label for="GroupName" sm={2}>Group: </Label>
-      //             <Col sm={10}>
-      //               <Input type="text" disabled name="GroupName" placeholder="Berlin" value={this.state.selectedGroup} />
-      //             </Col>
-      //           </FormGroup>
-      //           <FormGroup row>
-      //             <Label for="User" sm={2}>User: </Label>
-      //             <Col sm={10}>
-      //               <Input type="text" name="User" placeholder="0x123" disabled value={this.state.accounts[0]} />
-      //             </Col>
-      //           </FormGroup>
-      //           <FormGroup row>
-      //             <Label for="Amount" sm={2}>DAI Amount: </Label>
-      //             <Col sm={10}>
-      //               <Input type="text" name="Amount" placeholder="125" />
-      //             </Col>
-      //           </FormGroup>
-      //           <FormGroup check row>
-      //             <Col sm={{ size: 12, offset: 0 }}>
-      //               <Button>Fund</Button>
-      //             </Col>
-      //           </FormGroup>
-      //         </Form>
-      //       </Col>
-      //     </Row>
-      //   </Container>
-      // )
+      return (
+        <Container className="Wallet">
+          <Row>
+            <Col sm="12" md={{ size: 8, offset: 2 }}>
+              Fund Group
+              </Col>
+          </Row>
+          <Row>
+            <Col sm="12">
+              <Form onSubmit={this.handleSubmitJoinChannel}>
+                <FormGroup row>
+                  <Label for="GroupName" sm={2}>Group: </Label>
+                  <Col sm={10}>
+                    <Input type="text" disabled name="GroupName" placeholder="Berlin" value={this.state.selectedGroup} />
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Label for="User" sm={2}>User: </Label>
+                  <Col sm={10}>
+                    <Input type="text" name="User" placeholder="0x123" disabled value={this.state.accounts[0]} />
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Label for="Amount" sm={2}>DAI Amount: </Label>
+                  <Col sm={10}>
+                    <Input type="text" name="Amount" placeholder="125" />
+                  </Col>
+                </FormGroup>
+                <FormGroup check row>
+                  <Col sm={{ size: 12, offset: 0 }}>
+                    <Button>Fund</Button>
+                  </Col>
+                </FormGroup>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+      )
     }
 
   }
@@ -333,6 +336,211 @@ class Channel extends Component {
   }
 
 
+  async getGroups() {
+    var _this = this;
+    this.state.splitETH_event.getPastEvents('GroupCreated', {
+      fromBlock: 0,
+      toBlock: 'latest'
+    }, function () { })
+      .then(async function (events) {
+        _this.setState({
+          groups: []
+        });
+
+        console.log("events!!!!! : " + events);
+
+        for (let element of events) {
+          console.log("element!!!!! : " + element);
+          var friends = [];
+          for (let usr of element.returnValues._users) {
+            const result = await _this.state.splitETH.methods.groupBalances(element.returnValues._name, usr).call();
+
+            friends.push({
+              address: usr,
+              balance: result
+            })
+          }
+          const myBal = await _this.state.splitETH.methods.groupBalances(element.returnValues._name, _this.state.accounts[0]).call();
+
+          const result2 = await _this.state.splitETH.methods.groupCloseTime(element.returnValues._name).call();
+          console.log("que", result2);
+          _this.setState({
+            groups: [..._this.state.groups, {
+              name: _this.state.web3.utils.toAscii(element.returnValues._name),
+              friends: friends,
+              timeout: element.returnValues._timeout,
+              closed: result2 > 0 ? true : false,
+              myBal: myBal
+            }]
+          });
+        }
+      });
+  }
+
+  async handleJoinChannel(group) {
+      console.log(group);
+      //event.preventDefault();
+      this.setState({
+        selectedOption:2,
+        selectedGroup:group
+      });
+    }
+
+  async handlePullFundsFromChannel(group) {
+      console.log(group);
+      var _this = this;
+      await this.state.splitETH.methods.pullFunds(
+        this.state.web3.utils.fromAscii(group)
+      ).send({from:this.state.accounts[0]})
+      .then(function(receipt){
+        console.log(receipt);
+        _this.getGroups();
+      });
+
+    }
+
+    async handleCloseChannel(group) {
+      console.debug('handleClosechannel', group);
+
+      const lastBillSigned = await this.getLastBillSigned(group);
+
+      console.debug('handleCloseChannel', {
+        lastBillSigned
+      });
+
+      console.log(group);
+      var _this = this;
+
+      const addressMapping = {
+
+      };
+
+      const vArray = [];
+      const rArray = [];
+      const sArray = [];
+      const weiArray = [];
+      const signArray = [];
+
+      lastBillSigned.signatures.map(signature => {
+        addressMapping[signature.signer.toLowerCase()] = signature;
+      });
+
+      lastBillSigned.totalBalanceChange.map((entry, index) => {
+        const sign = parseInt(entry.value) >= 0;
+        const wei = toWei(entry.value).toString();
+
+        console.debug("!!", {
+          sign,
+          wei
+        });
+
+        addressMapping[entry.address.toLowerCase()].wei = wei;
+        addressMapping[entry.address.toLowerCase()].sign = sign;;
+      });
+
+
+
+      for (let address of Object.keys(addressMapping)) {
+        const entry = addressMapping[address];
+
+        vArray.push(entry.v);
+        rArray.push(entry.r);
+        sArray.push(entry.s);
+        weiArray.push((new BigNumber(entry.wei).absoluteValue().toString()));
+        signArray.push(entry.sign);
+      }
+
+      const parameters = [
+        this.state.web3.utils.fromAscii(group),
+        weiArray,
+        signArray,
+        lastBillSigned.timestamp,
+        vArray,
+        rArray,
+        sArray
+      ];
+
+      console.log('closeChannel', parameters);
+
+      await this.state.splitETH.methods.closeGroup(...parameters).send({from:this.state.accounts[0]})
+      .then(function(receipt){
+        console.log(receipt);
+        _this.getGroups();
+      });
+
+    }
+
+  renderGroupList(){
+
+      const listItems = this.state.groups.map((group) => {
+
+        const participantsItems = group.friends.map((participant,i) => {
+
+          var participantItem = {
+            address: participant.address,
+            balance: participant.balance
+          }
+
+          return(
+            <li key={i}>{participantItem.address} - Balance: {this.state.web3.utils.fromWei(participant.balance,"ether")} DAI
+            </li>
+          )
+        })
+
+        if(group.closed && group.myBal != 0){
+          return (<tr>
+            <th scope="row">{group.name}</th>
+            <td>{participantsItems}</td>
+            <td>{group.timeout}</td>
+            <td>Group is closed</td>
+            <td><Link href="" to={"/expenses/"+group.name}>View Expenses</Link></td>
+            <td><Button color="info" size="sm" onClick={() => this.handlePullFundsFromChannel(group.name)}>Pull Funds</Button></td>
+
+          </tr>);
+        }else if(group.closed && group.myBal == 0){
+          return (<tr>
+            <th scope="row">{group.name}</th>
+            <td>{participantsItems}</td>
+            <td>{group.timeout}</td>
+            <td>Group is closed</td>
+            <td><Link href="" to={"/expenses/"+group.name}>View Expenses</Link></td>
+            <td>Balance pulled</td>
+
+          </tr>);
+        }else{
+          return (<tr>
+            <th scope="row">{group.name}</th>
+            <td>{participantsItems}</td>
+            <td>{group.timeout}</td>
+            <td> <Button color="primary" size="sm" onClick={() => this.handleJoinChannel(group.name)}>Add Balance</Button></td>
+            <td><a href={"#/expenses/"+group.name}>Manage Expenses</a></td>
+            <td>
+              <div><Button color="danger" size="sm" onClick={() => this.handleCloseChannel(group.name)}>CLOSE</Button></div>
+            </td>
+
+          </tr>);
+        }
+      });
+
+      return (
+        <Table>
+          <thead>
+            <tr>
+              <th>Group Name</th>
+              <th>Participants</th>
+              <th>Timeout</th>
+              <th>Balance</th>
+              <th>Expenses</th>
+              <th>Close Group</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listItems}
+          </tbody>
+        </Table>
+      );
+    }
+
   render() {
     // this.handleNewChannel()
     // this.setState({selectedOption:1});
@@ -344,7 +552,7 @@ class Channel extends Component {
 
         {this.renderSelectedOption()}
 
-        {/* {this.renderGroupList()} */}
+        {this.renderGroupList()}
       </Segment>
     )
   }

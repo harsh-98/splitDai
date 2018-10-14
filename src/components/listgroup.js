@@ -46,9 +46,50 @@ class ListGroup extends Component {
             friends: [{ address: '' }],
             groups: []
           };
+          this.getGroups();
 
     }
 
+    async getGroups() {
+      var _this = this;
+      this.state.splitETH_event.getPastEvents('GroupCreated', {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }, function () { })
+        .then(async function (events) {
+          _this.setState({
+            groups: []
+          });
+
+          console.log("events!!!!! : " + events);
+
+          for (let element of events) {
+            console.log("element!!!!! : " + element);
+            var friends = [];
+            for (let usr of element.returnValues._users) {
+              const result = await _this.state.splitETH.methods.groupBalances(element.returnValues._name, usr).call();
+
+              friends.push({
+                address: usr,
+                balance: result
+              })
+            }
+            const myBal = await _this.state.splitETH.methods.groupBalances(element.returnValues._name, _this.state.accounts[0]).call();
+
+            const result2 = await _this.state.splitETH.methods.groupCloseTime(element.returnValues._name).call();
+            console.log("que", result2);
+            _this.setState({
+              groups: [..._this.state.groups, {
+                name: _this.state.web3.utils.toAscii(element.returnValues._name),
+                friends: friends,
+                timeout: element.returnValues._timeout,
+                closed: result2 > 0 ? true : false,
+                myBal: myBal
+              }]
+            });
+          }
+        });
+    }
 
     async handleJoinChannel(group) {
         console.log(group);
