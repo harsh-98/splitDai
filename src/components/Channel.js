@@ -513,7 +513,7 @@ class Channel extends Component {
             <td>{participantsItems}</td>
             <td>{group.timeout}</td>
             <td> <Button color="primary" size="sm" onClick={() => this.handleJoinChannel(group.name)}>Add Balance</Button></td>
-            <td><a href={"#/expenses/"+group.name}>Manage Expenses</a></td>
+            <td><a href={"/expenses/"+group.name}>Manage Expenses</a></td>
             <td>
               <div><Button color="danger" size="sm" onClick={() => this.handleCloseChannel(group.name)}>CLOSE</Button></div>
             </td>
@@ -521,7 +521,7 @@ class Channel extends Component {
           </tr>);
         }
       });
-      const aStyle = {width: '80%'}
+      const aStyle = {width: '90%'}
       return (
         <Table style={aStyle}>
           <thead>
