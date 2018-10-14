@@ -250,10 +250,10 @@ class Channel extends Component {
             {this.state.friends.map((friend, idx) => (
             <Form.Group>
               <Form.Input placeholder={`Friend #${idx + 1}`} width={11} value={friend.address} onChange={this.handleFriendNameChange(idx)}/>
-              <Button icon labelPosition='left' onClick={this.handleRemoveFriend(idx)}>
+              <div className="ui button" icon labelPosition='left' onClick={this.handleRemoveFriend(idx)}>
                 <Icon name='minus circle' />
                 Delete
-    </Button>
+    </div>
             </Form.Group>
             ))}
             <Form.Group>
