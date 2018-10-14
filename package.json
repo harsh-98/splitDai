@@ -20,6 +20,7 @@
     "react-scripts": "1.1.5",
     "reactstrap": "^6.4.0",
     "request": "^2.88.0",
+    "semantic-ui-react": "^0.82.5",
     "truffle": "^4.1.14",
     "web3": "^1.0.0-beta.36"
   },
