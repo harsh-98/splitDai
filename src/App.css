@@ -34,8 +34,8 @@ body {
 
 .Bill {
   padding: 20px;
-  max-width: 80%;
-  margin: auto;
+  margin-left: 10% ;
+  width: 50%;
   margin-bottom: 40px;
   background: #f8f9fa;
   border: 1px solid #e4e4e4; }

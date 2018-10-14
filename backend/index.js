@@ -268,8 +268,12 @@ const main = async () => {
     app.get('/getEthBalance', async (req, res) => {
         web3.eth.getBalance(req.query.address)
         .then(bal => {
-            res.json({
-                myBalance: web3.utils.fromWei(bal,"Ether")
+            seToken.methods.balanceOf(req.query.address).call()
+            .then(function(bal2){
+                res.json({
+                    tokenBalance: web3.utils.fromWei(bal2),
+                    myBalance: web3.utils.fromWei(bal,"Ether")
+                });
             });
         });
     });

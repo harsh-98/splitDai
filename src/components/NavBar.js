@@ -71,23 +71,20 @@ class NavBar extends Component {
       }
 
       handleItemClick = (e, { name }) => {
+        window.location.href = "https://makerdao.com/"
         this.setState({ activeItem: name })
       }
 
       render() {
         return (
         <Menu pointing inverted className="top fixed">
-        {/* <Link to='/'> */}
           <Menu.Item name='home' active={this.state.activeItem === 'home'} onClick={this.handleItemClick} />
-        {/* </Link> */}
 
-        {/* <Link to='/about'> */}
-          {/* <Menu.Item
+          <Menu.Item
             name='about'
             active={this.state.activeItem === 'about'}
             onClick={this.handleItemClick}
-            /> */}
-          {/* </Link> */}
+            />
 
           <Menu.Menu position='right'>
             <Menu.Item>

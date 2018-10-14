@@ -212,7 +212,7 @@ class Expenses extends Component {
 
       return (
         <div className="mt-5">
-          <h3>Bills from: {channelID}</h3>
+          <h3 style={{marginLeft: '30px'}}>Bills from: {channelID}</h3>
           <div className="mt-5">
             {bills && bills.map((bill, index) => (
               <div className="Bill">
@@ -256,9 +256,6 @@ class Expenses extends Component {
                 </div>
               </div>
             ))}
-          </div>
-          <div className="mt-4 text-right" style={{ maxWidth: '90%' }}>
-            <button className="btn btn-primary" onClick={this.addBill}>Add</button>
           </div>
           {this.state.addingBill && <div className="Bill mt-4">
             <FormGroup row>
@@ -320,6 +317,9 @@ class Expenses extends Component {
           </div>
 
         }
+          <div className="mt-4 " style={{marginLeft: '30px'}} >
+            <button className="btn btn-primary" onClick={this.addBill}>Add</button>
+          </div>
           <br/>
         </div>
       )
