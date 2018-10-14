@@ -299,7 +299,8 @@ const main = async () => {
             toBlock: 'latest'
         }, function(){})
         .then(async function(events){
-            
+          
+          if(!events) res.json({});
           groups = [];
           console.log("events!!!!! : " + events);
   
