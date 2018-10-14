@@ -17,12 +17,12 @@ class SideBar extends Component {
             <Icon name='add' />
                     </Menu.Item>
                 </Link>
-                <Link to="/view">
+                {/* <Link to="/view">
                     <Menu.Item>
                         View Groups
             <Icon name='list' />
                     </Menu.Item>
-                </Link>
+                </Link> */}
                 <Link to="/about">
                     <Menu.Item>
                         See Bills

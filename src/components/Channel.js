@@ -521,9 +521,9 @@ class Channel extends Component {
           </tr>);
         }
       });
-
+      const aStyle = {width: '80%'}
       return (
-        <Table>
+        <Table style={aStyle}>
           <thead>
             <tr>
               <th>Group Name</th>
