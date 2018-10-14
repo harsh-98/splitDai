@@ -3,21 +3,21 @@ import './App.css';
 import Web3 from 'web3';
 
 import {
-  HashRouter as Router,
-  Route} from 'react-router-dom'
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom'
 
 import Channel from './components/Channel'
+import About from './components/About'
+import SideBar from './components/Sidebar'
 import NavBar from './components/NavBar'
 import Wallet from './components/Wallet'
 import Expenses from './components/Expenses'
+import ListGroup from './components/listgroup'
 
 import 'bootstrap/dist/css/bootstrap.css';
 
-const About = () => (
-<div>
-  <h2>About</h2>
-</div>
-)
+import { Input, Menu, Segment, Sidebar } from 'semantic-ui-react'
 
 class App extends Component {
 
@@ -34,7 +34,7 @@ class App extends Component {
     this.state = {
       web3: web3,
       web3WH: web3WH,
-      accounts:'',
+      accounts: '',
     };
 
   }
@@ -42,22 +42,25 @@ class App extends Component {
   render() {
     return (
 
-      <div className="App">
 
-        <Router>
-          <div className="container-fluid">
-            <div>
-              <NavBar web3={this.state.web3} web3WH={this.state.web3WH} />
-            </div>
+      <Router>
+        <div>
+          <NavBar web3={this.state.web3} web3WH={this.state.web3WH} />
+          {/* <Sidebar.Pushable style={{margin: '0 !important'}} bottom attached> */}
+            <SideBar />
 
-            <Route exact path='/' render={() => <Channel web3={this.state.web3} web3WH={this.state.web3WH} />}/>
-            <Route path="/about" component={About}/>
-            <Route path='/expenses/:channelID' render={(props) => <Expenses web3={this.state.web3} web3WH={this.state.web3WH} match={props.match} />}/>
-
-            <Route path="/wallet" render={() => <Wallet web3={this.state.web3} web3WH={this.state.web3WH} />}/>
-          </div>
-        </Router>
-      </div>
+            <Sidebar.Pusher >
+              <div style={{height: '50px'}}></div>
+              <Route exact path='/' render={() => <Channel web3={this.state.web3} web3WH={this.state.web3WH} />} />
+              <Route path='/create' render={() => <Channel web3={this.state.web3} web3WH={this.state.web3WH} />} />
+              <Route path='/view' render={() => <ListGroup web3={this.state.web3} web3WH={this.state.web3WH} />} />
+              <Route path="/about" component={About} />
+              <Route path='/expenses/:channelID' render={(props) => <Expenses web3={this.state.web3} web3WH={this.state.web3WH} match={props.match} />} />
+              <Route path="/wallet" render={() => <Wallet web3={this.state.web3} web3WH={this.state.web3WH} />} />
+            </Sidebar.Pusher>
+          {/* </Sidebar.Pushable> */}
+        </div>
+      </Router>
     );
   }
 }

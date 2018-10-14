@@ -1,5 +1,5 @@
 body {
-  background-color: #f7f7f7; }
+  background-color:#D3D3D3		 }
 
 .App {
   text-align: center; }
@@ -26,22 +26,11 @@ body {
   to {
     transform: rotate(360deg); } }
 
-.Wallet {
-  margin-top: 4em;
-  padding: 2em 2em 2em 2em;
-  background-color: #fafafa;
-  width: 600px !important; }
 
-.Wallet .row {
-  margin-top: 0.8em; }
-
-.Wallet-body {
-  background-color: #fafafa; }
-
-.NewChannel-Container {
+/* .NewChannel-Container {
   padding-left: 3em;
   padding-top: 3em;
-  padding-right: 3em; }
+  padding-right: 3em; } */
 
 .Bill {
   padding: 20px;
